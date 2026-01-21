@@ -1,46 +1,52 @@
-using Unity.Mathematics;
 using UnityEngine;
 
 public class GemiHareket : MonoBehaviour
 {
     Rigidbody rb;
-    public float moveForce = 10f;
-    public float turnSpeed = 50f;
 
-    private void Start()
+    [Range(5f, 50f)]
+    public float speed = 20f;
+
+    public float maxSpeed = 15f;
+    public float turnSpeed = 3f;
+
+    float horizontal;
+    float vertical;
+
+    void Start()
     {
         rb = GetComponent<Rigidbody>();
     }
-    private void Update()
-    {
-        quaternion rt = transform.rotation;
-        float rt_x = Mathf.Clamp(rt.value.x, -5, 10);
-        float rt_z = Mathf.Clamp(rt.value.x, -25, 25);
-        rt.value.x = rt_x;
-        rt.value.z = rt_z;
-        transform.rotation = rt;
 
+    void Update()
+    {
+        horizontal = Input.GetAxis("Horizontal");
+        vertical = Input.GetAxis("Vertical");
     }
+
+    [System.Obsolete]
     void FixedUpdate()
     {
-        if (Input.GetKey(KeyCode.W))
-            rb.AddForce(transform.forward * moveForce);
+        // Ýleri / geri hareket (baktýðý yön)
+        if (vertical != 0f)
+        {
+            rb.AddForce(transform.forward * vertical * speed, ForceMode.Force);
+        }
 
-        if (Input.GetKey(KeyCode.S))
-            rb.AddForce(-transform.forward * moveForce);
+        // Dönüþ
+        if (horizontal != 0f)
+        {
+            //rb.AddTorque(Vector3.up * horizontal * turnSpeed, ForceMode.Force);
+            transform.Rotate(Vector3.up * horizontal * turnSpeed);
+        }
 
-        float turn = 0f;
-        if (Input.GetKey(KeyCode.A)) turn = -1f;
-        if (Input.GetKey(KeyCode.D)) turn = 1f;
+        // Hýz sýnýrý (sadece yatay)
+        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
-        rb.AddTorque(Vector3.up * turn * turnSpeed);
-        
+        if (flatVel.magnitude > maxSpeed)
+        {
+            Vector3 limited = flatVel.normalized * maxSpeed;
+            rb.velocity = new Vector3(limited.x, rb.velocity.y, limited.z);
+        }
     }
-
-    private void LateUpdate()
-    {
-
-    }
-
-
 }
