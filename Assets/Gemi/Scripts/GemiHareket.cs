@@ -1,16 +1,12 @@
 using UnityEngine;
+using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 public class GemiHareket : MonoBehaviour
 {
     Rigidbody rb;
+    public float speed = 5f;
+    public float RotationSpeed = .2f;
 
-    [Range(5f, 50f)]
-    public float speed = 20f;
-
-    public float maxSpeed = 15f;
-    public float turnSpeed = 3f;
-
-    float horizontal;
     float vertical;
 
     void Start()
@@ -18,35 +14,20 @@ public class GemiHareket : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    void Update()
+    private void Update()
     {
-        horizontal = Input.GetAxis("Horizontal");
-        vertical = Input.GetAxis("Vertical");
+        vertical = Input.GetKey(KeyCode.D) ? +1 : Input.GetKey(KeyCode.A) ? -1 : 0;
     }
 
     [System.Obsolete]
     void FixedUpdate()
     {
-        // Ýleri / geri hareket (baktýðý yön)
-        if (vertical != 0f)
-        {
-            rb.AddForce(transform.forward * vertical * speed, ForceMode.Force);
-        }
-
-        // Dönüþ
-        if (horizontal != 0f)
-        {
-            //rb.AddTorque(Vector3.up * horizontal * turnSpeed, ForceMode.Force);
-            transform.Rotate(Vector3.up * horizontal * turnSpeed);
-        }
-
-        // Hýz sýnýrý (sadece yatay)
-        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
-        if (flatVel.magnitude > maxSpeed)
-        {
-            Vector3 limited = flatVel.normalized * maxSpeed;
-            rb.velocity = new Vector3(limited.x, rb.velocity.y, limited.z);
+        if (Input.GetKey(KeyCode.W)) //W Basýlýyorsa
+        { 
+            Vector3 localVelocity = new Vector3(0, 0,speed); // Z = forward (local)
+            rb.velocity = transform.TransformDirection(localVelocity);
+            transform.Rotate(0,vertical * RotationSpeed, 0);
         }
     }
+
 }
