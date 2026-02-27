@@ -93,7 +93,6 @@ public class MouseClick3D : MonoBehaviour
             Gemi.transform.position,
             points[index].transform.position
         );
-
         return mesafe < AlgilamaUzakligi;
     }
 
