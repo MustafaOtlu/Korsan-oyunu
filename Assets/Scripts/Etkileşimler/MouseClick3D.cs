@@ -106,4 +106,20 @@ public class MouseClick3D : MonoBehaviour
                 Panels[i].SetActive(false);
         }
     }
+
+
+    private void OnDrawGizmos()
+    {
+        if (points == null) return;
+
+        Gizmos.color = Color.blue;
+
+        for (int i = 0; i < points.Length; i++)
+        {
+            if (points[i] != null)
+            {
+                Gizmos.DrawWireSphere(points[i].transform.position, AlgilamaUzakligi);
+            }
+        }
+    }
 }

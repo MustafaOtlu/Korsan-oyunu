@@ -17,10 +17,10 @@ public class ShipController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.interpolation = RigidbodyInterpolation.Interpolate;
 
-        // Geminin dalgalarda veya adalara çarpýnca devrilmesini önler
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        rb.constraints = RigidbodyConstraints.FreezeRotationX |
+                         RigidbodyConstraints.FreezeRotationZ |
+                         RigidbodyConstraints.FreezePositionY; 
 
-        // Sürtünme ekleyelim ki W'dan elimizi çekince sonsuza kadar kaymasýn
         rb.linearDamping = 1f;
         rb.angularDamping = 2f;
     }
